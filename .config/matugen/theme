@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+# ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃                                                                  ┃
+# ┃      ZUSQII  -  M A T U G E N  T H E M E  R U N N E R            ┃
+# ┃                                                                  ┃
+# ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+#
+# Usage:
+#   theme [dark|light]                      → regen from current wallpaper
+#   theme [dark|light] image /path/to/img   → from an image file
+#   theme [dark|light] color '#hexcode'     → from a hex color
+#   theme [dark|light] preset dusky         → from a preset in ~/.config/matugen/presets/
+#
+# Examples:
+#   theme dark
+#   theme light image ~/Pictures/wallpapers/city.jpg
+#   theme dark color '#7d82d9'
+#   theme dark preset dusky
+#   theme dark image ~/Pictures/wallpapers/wall.png scheme-vibrant
+
+set -euo pipefail
+
+MATUGEN_CONFIG="$HOME/.config/matugen/config.toml"
+PRESETS_DIR="$HOME/.config/matugen/presets"
+
+# ── helpers ──────────────────────────────────────────────────────────
+
+usage() {
+    cat <<'EOF'
+Usage: theme [dark|light] [MODE] [ARG] [SCHEME_TYPE]
+
+  theme dark                              regen colors from current wallpaper
+  theme light image ~/Pictures/wall.jpg  generate from image
+  theme dark  color '#7d82d9'            generate from hex color
+  theme dark  preset dusky               use a preset from ~/.config/matugen/presets/
+
+Optional scheme type (append to any command):
+  scheme-tonal-spot    calm, cohesive (default)
+  scheme-vibrant       saturated, punchy
+  scheme-expressive    creative, colorful
+  scheme-content       faithful to source
+  scheme-fidelity      very close to source
+
+EOF
+}
+
+die()  { printf '\033[1;31mERROR:\033[0m %s\n' "$*" >&2; exit 1; }
+log()  { printf '\033[1;34m::\033[0m %s\n' "$*"; }
+
+reload_waybar() {
+    pkill -SIGUSR2 waybar 2>/dev/null || true
+}
+
+# ── parse args ────────────────────────────────────────────────────────
+
+[[ $# -lt 1 ]] && { usage; exit 1; }
+
+MODE="$1"; shift
+[[ "$MODE" == "dark" || "$MODE" == "light" ]] || die "First arg must be 'dark' or 'light', got: $MODE"
+
+SOURCE="${1:-current}"   # current | image | color | preset
+shift 2>/dev/null || true
+
+SCHEME_TYPE="scheme-tonal-spot"
+SOURCE_ARG=""
+
+case "$SOURCE" in
+    current)
+        # regen from what swww currently has
+        ;;
+    image)
+        [[ -n "${1:-}" ]] || die "image mode requires a path"
+        SOURCE_ARG="$1"; shift
+        [[ -f "$SOURCE_ARG" ]] || die "File not found: $SOURCE_ARG"
+        ;;
+    color)
+        [[ -n "${1:-}" ]] || die "color mode requires a hex value (e.g. '#7d82d9')"
+        SOURCE_ARG="$1"; shift
+        ;;
+    preset)
+        [[ -n "${1:-}" ]] || die "preset mode requires a preset name"
+        PRESET_NAME="$1"; shift
+        PRESET_FILE="$PRESETS_DIR/${PRESET_NAME}.toml"
+        [[ -f "$PRESET_FILE" ]] || die "Preset not found: $PRESET_FILE"
+        # Extract accent color from preset
+        SOURCE_ARG=$(grep -m1 '^accent' "$PRESET_FILE" | sed 's/accent *= *"\(.*\)"/\1/')
+        [[ -n "$SOURCE_ARG" ]] || die "No 'accent' key found in preset: $PRESET_FILE"
+        log "Using preset '$PRESET_NAME' → accent: $SOURCE_ARG"
+        SOURCE="color"
+        ;;
+    scheme-*)
+        # user skipped source, just passed a scheme type
+        SCHEME_TYPE="$SOURCE"
+        SOURCE="current"
+        ;;
+    *)
+        die "Unknown source mode: $SOURCE"
+        ;;
+esac
+
+# optional trailing scheme type override
+if [[ -n "${1:-}" && "$1" == scheme-* ]]; then
+    SCHEME_TYPE="$1"; shift
+fi
+
+# ── run matugen ───────────────────────────────────────────────────────
+
+BASE_CMD=(matugen --config "$MATUGEN_CONFIG" --mode "$MODE" --type "$SCHEME_TYPE")
+
+case "$SOURCE" in
+    current)
+        # Try to get current wallpaper from swww
+        if command -v swww >/dev/null 2>&1; then
+            CURRENT_WALL=$(swww query 2>/dev/null | grep -oP '(?<=image: ).*' | head -1 | tr -d ' ') || true
+        fi
+        [[ -n "${CURRENT_WALL:-}" && -f "$CURRENT_WALL" ]] || die "Could not determine current wallpaper. Use 'theme $MODE image /path/to/img' instead."
+        log "Regenerating from current wallpaper: ${CURRENT_WALL##*/}"
+        "${BASE_CMD[@]}" image "$CURRENT_WALL"
+        ;;
+    image)
+        log "Generating from image: ${SOURCE_ARG##*/} [$MODE / $SCHEME_TYPE]"
+        "${BASE_CMD[@]}" image "$SOURCE_ARG"
+        ;;
+    color)
+        log "Generating from color: $SOURCE_ARG [$MODE / $SCHEME_TYPE]"
+        "${BASE_CMD[@]}" color "$SOURCE_ARG"
+        ;;
+esac
+
+log "Done! Kitty, Rofi, Waybar and Hyprland colors updated."

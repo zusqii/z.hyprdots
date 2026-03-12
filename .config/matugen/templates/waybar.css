@@ -1,0 +1,4 @@
+@define-color primary {{colors.primary.default}};
+@define-color main-bg {{colors.surface.default}};
+@define-color main-fg {{colors.on_surface.default}};
+@define-color accent {{colors.tertiary.default}};

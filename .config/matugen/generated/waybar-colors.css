@@ -1,0 +1,27 @@
+/*
+ * ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ * ┃      ZUSQII  -  W A Y B A R  C O L O R S  (matugen generated)    ┃
+ * ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ *
+ * @define-color names match style.css exactly — drop-in replacement.
+ * style.css uses: @surface, @text, @subtext, @primary, @secondary,
+ *                 @tertiary, @error, @on_primary
+ */
+
+@define-color surface              #111418;
+@define-color on_surface           #e1e2e8;
+@define-color surface_container    #1d2024;
+@define-color surface_container_high #272a2f;
+
+/* style.css aliases */
+@define-color text                 #e1e2e8;
+@define-color subtext              #c3c6cf;
+
+@define-color primary              #a1cafd;
+@define-color on_primary           #003259;
+@define-color secondary            #bbc7db;
+@define-color tertiary             #d7bee4;
+
+@define-color outline              #8d9199;
+@define-color error                #ffb4ab;
+@define-color on_error             #690005;

@@ -1,0 +1,27 @@
+/*
+ * ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ * ┃      ZUSQII  -  W A Y B A R  C O L O R S  (matugen generated)    ┃
+ * ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ *
+ * @define-color names match style.css exactly — drop-in replacement.
+ * style.css uses: @surface, @text, @subtext, @primary, @secondary,
+ *                 @tertiary, @error, @on_primary
+ */
+
+@define-color surface              {{colors.surface.default.hex}};
+@define-color on_surface           {{colors.on_surface.default.hex}};
+@define-color surface_container    {{colors.surface_container.default.hex}};
+@define-color surface_container_high {{colors.surface_container_high.default.hex}};
+
+/* style.css aliases */
+@define-color text                 {{colors.on_surface.default.hex}};
+@define-color subtext              {{colors.on_surface_variant.default.hex}};
+
+@define-color primary              {{colors.primary.default.hex}};
+@define-color on_primary           {{colors.on_primary.default.hex}};
+@define-color secondary            {{colors.secondary.default.hex}};
+@define-color tertiary             {{colors.tertiary.default.hex}};
+
+@define-color outline              {{colors.outline.default.hex}};
+@define-color error                {{colors.error.default.hex}};
+@define-color on_error             {{colors.on_error.default.hex}};

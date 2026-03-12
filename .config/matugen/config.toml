@@ -1,0 +1,82 @@
+# ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃                                                                  ┃
+# ┃      ZUSQII  -  M A T U G E N  C O N F I G                       ┃
+# ┃                                                                  ┃
+# ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+[config]
+# scheme-tonal-spot    → calm, cohesive (default)
+# scheme-vibrant       → punchy, saturated
+# scheme-expressive    → creative, colorful
+# scheme-content       → faithful to source image
+# scheme-fidelity      → very close to source
+
+# -----------------------------------------------------------------------------
+# Kitty
+# -----------------------------------------------------------------------------
+
+[templates.kitty]
+input_path  = '~/.config/matugen/templates/kitty-colors.conf'
+output_path = '~/.config/matugen/generated/kitty-colors.conf'
+post_hook   = '''
+bash -c '{
+  ln -nfs "$HOME/.config/matugen/generated/kitty-colors.conf" "$HOME/.config/kitty/theme.conf"
+  pkill -SIGUSR1 kitty
+} >/dev/null 2>&1 </dev/null & disown'
+'''
+
+# -----------------------------------------------------------------------------
+# Rofi
+# -----------------------------------------------------------------------------
+
+[templates.rofi]
+input_path  = '~/.config/matugen/templates/rofi-colors.rasi'
+output_path = '~/.config/matugen/generated/rofi-colors.rasi'
+post_hook   = '''
+bash -c '{
+  ln -nfs "$HOME/.config/matugen/generated/rofi-colors.rasi" "$HOME/.config/rofi/colors.rasi"
+} >/dev/null 2>&1 </dev/null & disown'
+'''
+
+# -----------------------------------------------------------------------------
+# Waybar
+# -----------------------------------------------------------------------------
+
+[templates.waybar]
+input_path  = '~/.config/matugen/templates/waybar-colors.css'
+output_path = '~/.config/matugen/generated/waybar-colors.css'
+post_hook   = '''
+bash -c '{
+  ln -nfs "$HOME/.config/matugen/generated/waybar-colors.css" "$HOME/.config/waybar/theme.css"
+  pkill -SIGUSR2 waybar || (waybar &)
+} >/dev/null 2>&1 </dev/null & disown'
+'''
+
+# -----------------------------------------------------------------------------
+# Hyprland accent colors
+# -----------------------------------------------------------------------------
+
+[templates.hyprland]
+input_path  = '~/.config/matugen/templates/hyprland-colors.conf'
+output_path = '~/.config/hypr/colors.conf'
+post_hook   = 'bash -c "{ hyprctl reload; } >/dev/null 2>&1 & disown"'
+
+[templates.gtk3]
+input_path  = '~/.config/matugen/templates/gtk-colors.css'
+output_path = '~/.config/matugen/generated/gtk-3.css'
+post_hook   = '''
+bash -c '{
+  mkdir -p "$HOME/.config/gtk-3.0"
+  ln -nfs "$HOME/.config/matugen/generated/gtk-3.css" "$HOME/.config/gtk-3.0/gtk.css"
+} >/dev/null 2>&1 </dev/null & disown'
+'''
+
+[templates.vesktop]
+input_path  = '~/.config/matugen/templates/midnight-discord.css'
+output_path = '~/.config/matugen/generated/midnight-discord.css'
+post_hook   = '''
+bash -c '{
+  mkdir -p "$HOME/.config/vesktop/themes"
+  ln -nfs "$HOME/.config/matugen/generated/midnight-discord.css" "$HOME/.config/vesktop/themes/midnight-discord.css"
+} >/dev/null 2>&1 </dev/null & disown'
+'''

@@ -1,0 +1,20 @@
+/*
+ * ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ * ┃      ZUSQII  -  R O F I  C O L O R S  (matugen generated)        ┃
+ * ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ *
+ * Variable names match config.rasi exactly — drop-in replacement.
+ */
+
+* {
+    surface:                #111418;
+    on-surface:             #e1e2e8;
+    surface-container:      #1d2024;
+    surface-container-high: #272a2f;
+    on-surface-variant:     #c3c6cf;
+    primary:                #a1cafd;
+    on-primary:             #003259;
+    outline:                #8d9199;
+    error-container:        #93000a;
+    on-error-container:     #ffdad6;
+}
