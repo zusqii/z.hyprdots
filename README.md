@@ -1,5 +1,1 @@
-star :)
-
-also make sure to make all the .sh executable
-
-
+be smart. use ai to install properly
